@@ -26,11 +26,11 @@
 ## 📦 Installation
 
 ```bash
-npm install caishen-sdk
+pip install caishen-sdk-python
 # or
-yarn add caishen-sdk
+pip install caishen-sdk-python
 # or
-pnpm add caishen-sdk
+pip add caishen-sdk-python
 ```
 
 > ⚠️ Requires Node.js ≥ 14.x and TypeScript ≥ 4.x
@@ -39,11 +39,10 @@ pnpm add caishen-sdk
 
 ## 🚀 Quick Start
 
-```ts
-import { CaishenSDK, createAgentTools } from "caishen-sdk";
+```py
+from caishen_sdk_python import CaishenSDK
 
-const sdk = new CaishenSDK("your-project-key");
-const tools = createAgentTools(sdk);
+sdk = CaishenSDK("your-project-key")
 ```
 
 ---
@@ -55,10 +54,10 @@ You can authenticate as either a **user** or an **agent**.
 ### Connect as User
 
 ```ts
-await sdk.connectAsUser({
-  token: 'USER TOKEN',
-  provider: 'USER PROVIDER',
-});
+await sdk.connect_as_user(
+  'USER PROVIDER',
+  'USER TOKEN'
+);
 ```
 
 #### ✅ Supported Providers
@@ -79,9 +78,10 @@ await sdk.connectAsUser({
 ### Connect as Agent
 
 ```ts
-await sdk.connectAsAgent({
-  agentId: 'AGENT ID',
-});
+await sdk.connect_as_agent(
+  'AGENT ID',
+  'USER ID'
+);
 ```
 
 ---
@@ -456,13 +456,13 @@ type TokenWithPrice = Token & {
 
 ```bash
 # Clone & install
-npm install
+pip install setuptools wheel twine
 
 # Build SDK
-npm run build
+python setup.py sdist bdist_wheel
 
 # Dev mode
-npm run dev
+pip install .
 ```
 
 ---
