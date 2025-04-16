@@ -1,8 +1,9 @@
 import requests
-from typing import Optional, Literal, Dict, Any, Callable
+from typing import Optional, Literal, Any, Callable, Dict
 from .constants import BASE_URL
-from .cash import cash
-from .crypto import crypto
+from . import cash
+from . import crypto
+from .utils import _ModuleWrapper
 
 class CaishenSDK:
     def __init__(self, project_key: str):
@@ -13,18 +14,8 @@ class CaishenSDK:
         self.agent_token: Optional[str] = None
         self.user_token: Optional[str] = None
         self.connected_as: Optional[Literal['agent', 'user']] = None
-        self.cash = self._bind_module(cash.Cash())
-        self.crypto = self._bind_module(crypto.Crypto())
-
-    def _bind_module(self, module: Any) -> Dict[str, Callable]:
-        bound = {}
-        for key in dir(module):
-            fn = getattr(module, key)
-            if callable(fn) and not key.startswith("_"):
-                def make_wrapper(f):
-                    return lambda *args, **kwargs: f(self, *args, **kwargs)
-                bound[key] = make_wrapper(fn)
-        return bound
+        self.cash = _ModuleWrapper(self, cash)
+        self.crypto = _ModuleWrapper(self, crypto)
 
     async def connect_as_agent(self, agent_id: Optional[str] = None, user_id: Optional[str] = None) -> str:
         if self.connected_as:
@@ -33,7 +24,7 @@ class CaishenSDK:
             )
         
         try:
-            response = await requests.post(
+            response = requests.post(
                 f"{BASE_URL}/auth/agents/connect",
                 json={"agentId": agent_id, "userId": user_id},
                 headers={"projectKey": self.project_key},
