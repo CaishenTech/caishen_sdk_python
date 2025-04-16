@@ -1,0 +1,14 @@
+# compiled output
+/dist
+/build
+dist
+build
+caishen_sdk_python.egg-info
+caishen_sdk_python/__pycache__
+caishen_sdk_python/crypto/__pycache__
+caishen_sdk_python/cash/__pycache__
+caishen_sdk_python/constants/__pycache__
+tests/__pycache__
+caishen_sdk_python/agents/__pycache__
+#Env
+*.env
