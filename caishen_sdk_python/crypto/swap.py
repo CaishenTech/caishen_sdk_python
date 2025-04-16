@@ -15,7 +15,8 @@ async def swap(self, wallet: Dict, payload: Dict) -> dict:
             json={'wallet': wallet, 'payload': payload},
             headers=headers,
         )
-        return response
+        response.raise_for_status()
+        return response.json()
     except Exception as e:
         raise Exception(f"Failed to execute the swap route: {str(e)}")
 
@@ -32,7 +33,8 @@ async def get_swap_route(self, wallet: Dict, payload: Dict) -> dict:
             json={'wallet': wallet, 'payload': payload},
             headers=headers,
         )
-        return response
+        response.raise_for_status()
+        return response.json()
     except Exception as e:
         raise Exception(f"Failed to get route to execute: {str(e)}")
     
