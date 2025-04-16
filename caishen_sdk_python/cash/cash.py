@@ -5,6 +5,9 @@ from ..constants import BASE_URL
 
 async def send(self, params: SendTransactionParams) -> TransactionResponse:
     auth_token = self.agent_token or self.user_token
+    if not auth_token:
+        raise Exception('Authentication required. Connect as user or agent first.')
+
     headers = {
         "Authorization": f"Bearer {auth_token}"
     }
@@ -18,6 +21,9 @@ async def send(self, params: SendTransactionParams) -> TransactionResponse:
 
 async def deposit(self, params: DepositCashParams) -> TransactionResponse:
     auth_token = self.agent_token or self.user_token
+    if not auth_token:
+        raise Exception('Authentication required. Connect as user or agent first.')
+    
     headers = {
         "Authorization": f"Bearer {auth_token}"
     }
@@ -31,6 +37,9 @@ async def deposit(self, params: DepositCashParams) -> TransactionResponse:
 
 async def withdraw(self, params: WithdrawCashParams) -> TransactionResponse:
     auth_token = self.agent_token or self.user_token
+    if not auth_token:
+        raise Exception('Authentication required. Connect as user or agent first.')
+    
     headers = {
         "Authorization": f"Bearer {auth_token}"
     }
@@ -44,6 +53,9 @@ async def withdraw(self, params: WithdrawCashParams) -> TransactionResponse:
 
 async def get_balance(self, account: int) -> BalanceResponse:
     auth_token = self.agent_token or self.user_token
+    if not auth_token:
+        raise Exception('Authentication required. Connect as user or agent first.')
+    
     headers = {
         "Authorization": f"Bearer {auth_token}"
     }
@@ -57,6 +69,9 @@ async def get_balance(self, account: int) -> BalanceResponse:
 
 async def get_supported_tokens(self) -> List[Token]:
     auth_token = self.agent_token or self.user_token
+    if not auth_token:
+        raise Exception('Authentication required. Connect as user or agent first.')
+    
     headers = {
         "Authorization": f"Bearer {auth_token}"
     }
