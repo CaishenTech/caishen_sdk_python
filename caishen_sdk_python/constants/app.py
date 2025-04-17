@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 # Base URL for the API
-BASE_URL = 'http://localhost:8080'
+BASE_URL = 'https://build.caishen.tech'
 # BASE_URL = 'https://build.caishen.xyz'  # Uncomment this if needed
 
 class ChainType(Enum):
