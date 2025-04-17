@@ -1,10 +1,10 @@
 
-# Caishen SDK
+# Caishen SDK (Python)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![npm version](https://badge.fury.io/js/caishen-sdk.svg)](https://badge.fury.io/js/caishen-sdk)
+[![PyPI version](https://badge.fury.io/py/caishen-sdk-python.svg)](https://badge.fury.io/py/caishen-sdk-python)
 
-> The Caishen SDK provides developers with seamless access to unlimited multi-chain crypto wallets. It offers a unified interface for interacting with various blockchain networks and managing crypto assets.
+> The Caishen SDK (Python) provides seamless access to multi-chain crypto wallets with a unified interface for managing assets across various blockchain networks.
 
 ---
 
@@ -12,13 +12,13 @@
 
 - 🔗 Multi-chain wallet support
 - 🌐 Supports major blockchains:
-  - Ethereum (via `ethers.js`)
-  - Bitcoin (via `bitcoinjs-lib`)
-  - Solana (via `@solana/web3.js`)
-  - Cardano (via `@emurgo/cardano-serialization-lib`)
+  - Ethereum
+  - Bitcoin
+  - Solana
+  - Cardano
   - Sui, NEAR, Ripple, Tron, TON, Aptos
 - 🔒 Secure wallet management
-- ⚙️ Type-safe TypeScript APIs
+- 🐍 Typed Python API interfaces
 - 💸 Token operations: Send, Balance, Swap, Deposit, Withdraw
 
 ---
@@ -27,19 +27,14 @@
 
 ```bash
 pip install caishen-sdk-python
-# or
-pip install caishen-sdk-python
-# or
-pip add caishen-sdk-python
+> ⚠️ Requires Python ≥ 3.7
 ```
-
-> ⚠️ Requires Node.js ≥ 14.x and TypeScript ≥ 4.x
 
 ---
 
 ## 🚀 Quick Start
 
-```py
+```python
 from caishen_sdk_python import CaishenSDK
 
 sdk = CaishenSDK("your-project-key")
@@ -53,11 +48,11 @@ You can authenticate as either a **user** or an **agent**.
 
 ### Connect as User
 
-```ts
+```python
 await sdk.connect_as_user(
   'USER PROVIDER',
   'USER TOKEN'
-);
+)
 ```
 
 #### ✅ Supported Providers
@@ -77,11 +72,11 @@ await sdk.connect_as_user(
 
 ### Connect as Agent
 
-```ts
+```python
 await sdk.connect_as_agent(
-  'AGENT ID',
-  'USER ID'
-);
+  'AGENT_ID',
+  'USER_ID'
+)
 ```
 
 ---
@@ -100,32 +95,30 @@ Fetch a wallet associated with a user or agent for a specific chain.
 | `account`   | number   | ✅        | Account index or identifier |
 
 #### 📘 Example
-```ts
-const wallet = await sdk.crypto.getWallet({
-  chainType: 'ETHEREUM',
-  chainId: 1,
-  account: 0,
-});
+```python
+wallet = await sdk.crypto.get_wallet({
+    "chainType": "ETHEREUM",
+    "chainId": 1,
+    "account": 0
+})
 ```
 #### 📚 Type: `IWalletAccount`
-```ts
-interface IWalletAccount {
-  address: string;
-  chainType: string;
-  publicKey: string;
-  privateKey?: string; // Only returned if access is enabled in the dashboard
-  account: number;
-}
+```python
+class IWalletAccount:
+  address: str
+  chainType: str
+  publicKey: str
+  privateKey: Optional(str)  # Only returned if access is enabled in the dashboard
+  account: int
 ```
 > ⚠️ Private key is optional and only available if explicitly enabled in the dashboard.
 ### MinimalWalletInput
 
-```ts
-interface MinimalWalletInput {
-  account: number;
-  chainType: string;
-  address: string;
-}
+```python
+class MinimalWalletInput:
+  account: int
+  chainType: str
+  address: str
 ```
 
 Used for all `cash` and `swap` functions to avoid sending sensitive data.
@@ -136,13 +129,13 @@ Returns the list of all chain types supported by the backend for wallet creation
 
 #### 📦 Returns
 
-```ts
-string[] // e.g., ['evm', 'solana']
+```python
+List[str] // e.g., ['evm', 'solana']
 ```
 
 #### 📘 Example
-```ts
-const chains = await sdk.crypto.getSupportedChainTypes();
+```python
+chains = await sdk.crypto.get_supported_chain_types()
 ```
 
 ### 🔗 Get EVM RPC URL
@@ -155,9 +148,8 @@ Returns the public RPC endpoint URL for a given EVM-compatible chain ID.
 | `chainId`  | ChainIds | ✅        | Chain ID enum value |
 
 ### 📦 Returns
-
-```ts
-const rpcUrl = await sdk.crypto.getRPC(1); // Ethereum Mainnet
+```python
+rpc_url = await sdk.crypto.get_rpc(1)
 ```
 
 ---
@@ -178,21 +170,19 @@ Send a token or native coin (like ETH, MATIC, SOL) to another address.
 - If `payload.token` is provided, it sends that **ERC20 or token** instead.
 
 #### 📦 Returns
-
-```ts
-string // Transaction hash
+```python
+'transaction_hash'
 ```
-
 #### 📘 Example
-```ts
-const txHash = await sdk.crypto.send({
-  wallet,
-  payload: {
-    token: '0xTokenAddress...', // omit for native
-    amount: '0.5',
-    toAddress: '0xRecipient...',
-  },
-});
+```python
+tx_hash = await sdk.crypto.send({
+    "wallet": wallet,
+    "payload": {
+        "token": "0xTokenAddress",  # Optional
+        "amount": "0.5",
+        "toAddress": "0xRecipientAddress"
+    }
+})
 ```
 
 ### 📊 Get Balance
@@ -207,23 +197,23 @@ Fetch the balance of a wallet for either the **native coin** or a specific **tok
 > 🚫 Do not pass the full `IWalletAccount` into this function — only `MinimalWalletInput` is required and safer.
 #### 📦 Returns
 
-```ts
-string // Balance (in decimal format)
+```python
+'Balance (in decimal format)'
 ```
 
 #### Native Balance
 
-```ts
-const native = await sdk.crypto.getBalance({ wallet, payload: {} });
+```python
+native = await sdk.crypto.get_balance({"wallet": wallet, "payload": {}})
 ```
 
 #### Token Balance
 
-```ts
-const dai = await sdk.crypto.getBalance({
-  wallet,
-  payload: { token: '0x6B1754...' },
-});
+```python
+token = await sdk.crypto.get_balance({
+    "wallet": wallet,
+    "payload": {"token": "0xTokenAddress"}
+})
 ```
 
 ---
@@ -243,53 +233,59 @@ Fetch a possible token swap route across chains.
 
 #### `payload` structure:
 
-```ts
+```python
 {
-  amount: string; // in smallest unit (e.g. wei)
+  amount: str; // in smallest unit (e.g. wei)
   from: {
-    tokenAddress: string;
+    tokenAddress: str;
     chainType: ChainType;
-    chainId?: number;
+    chainId: Optional(int);
   };
   to: {
-    tokenAddress: string;
+    tokenAddress: str;
     chainType: ChainType;
-    chainId?: number;
+    chainId: Optional(int);
   };
 }
 ```
 
 #### 📦 Returns
 
-```ts
-interface RouteOutput {
-  id: string;
-  fromChainId: number;
-  fromAmountUSD: string;
-  fromAmount: string;
-  fromToken: TokenWithPrice;
-  fromAddress?: string;
-  toChainId: number;
-  toAmountUSD: string;
-  toAmount: string;
-  toAmountMin: string;
-  toToken: TokenWithPrice;
-  toAddress?: string;
-  confirmationCode: string;
-}
+```python
+class RouteOutput(TypeDict):
+  id: str
+  fromChainId: int
+  fromAmountUSD: str
+  fromAmount: str
+  fromToken: TokenWithPrice
+  fromAddress: Optional(str)
+  toChainId: int
+  toAmountUSD: str
+  toAmount: str
+  toAmountMin: str
+  toToken: TokenWithPrice
+  toAddress: Optional(str)
+  confirmationCode: str
+
 ```
 
 #### 📘 Example
 
-```ts
-const route = await sdk.crypto.getSwapRoute({
-  wallet: { account: 0 },
-  payload: {
-    amount: '1000000000000000000',
-    from: { tokenAddress: '0x...', chainType: 'ETHEREUM' },
-    to: { tokenAddress: '0x...', chainType: 'ETHEREUM' },
-  },
-});
+```python
+route = await sdk.crypto.get_swap_route({
+    "wallet": {"account": 0},
+    "payload": {
+        "amount": "1000000000000000000",
+        "from": {
+            "tokenAddress": "0x...",
+            "chainType": "ETHEREUM"
+        },
+        "to": {
+            "tokenAddress": "0x...",
+            "chainType": "ETHEREUM"
+        }
+    }
+})
 ```
 
 ### 🔄 Execute Swap
@@ -305,29 +301,28 @@ Execute the swap route using a confirmation code.
 
 #### `payload` structure:
 
-```ts
+```python
 {
-  confirmationCode: string; // from getSwapRoute()
+  confirmationCode: str; # from getSwapRoute()
 }
 ```
 
 #### 📦 Returns
 
 ```ts
-interface RouteExecutedResponse {
-  transactionStatus: string;
-  transactionHash: string | null;
-  fees: string | null;
-  error: string | null;
-}
+class RouteExecutedResponse(TypeDict):
+  transactionStatus: str
+  transactionHash: Optional(str)
+  fees: Optional(str)
+  error: Optional(str)
 ```
 
 #### 📘 Example
-```ts
-const result = await sdk.crypto.swap({
-  wallet: { account: 0, chainType: 'ETHEREUM' },
-  payload: { confirmationCode: 'abc123' },
-});
+```python
+result = await sdk.crypto.swap({
+    "wallet": {"account": 0, "chainType": "ETHEREUM"},
+    "payload": {"confirmationCode": "abc123"}
+})
 ```
 
 ---
@@ -345,14 +340,13 @@ Get current balance of all tokens for a specific account.
 
 #### Returns
 
-```ts
-Promise<BalanceResponse>
+```python
+'BalanceResponse'
 ```
-
 #### 📘 Example
 
-```ts
-const balance = await sdk.cash.getBalance({ account: 1 });
+```python
+balance = await sdk.cash.get_balance({"account": 1})
 ```
 
 ### 💵 Deposit
@@ -366,18 +360,18 @@ Deposit a supported token into the account.
 
 #### Returns
 
-```ts
-Promise<TransactionResponse>
+```python
+TransactionResponse
 ```
 
 #### 📘 Example
 
-```ts
+```python
 await sdk.cash.deposit({
-  account: 1,
-  tokenAddress: '0x...',
-  amount: '1000000000000000000',
-});
+    "account": 1,
+    "tokenAddress": "0x...",
+    "amount": "1000000000000000000"
+})
 ```
 
 ### 💸 Withdraw
@@ -391,18 +385,18 @@ Withdraw a supported token from the account.
 
 #### Returns
 
-```ts
-Promise<TransactionResponse>
+```python
+TransactionResponse
 ```
 
 #### 📘 Example
 
-```ts
+```python
 await sdk.cash.withdraw({
-  account: 1,
-  tokenAddress: '0x...',
-  amount: '1000000000000000000',
-});
+    "account": 1,
+    "tokenAddress": "0x...",
+    "amount": "1000000000000000000"
+})
 ```
 
 ### 🔁 Send
@@ -417,25 +411,25 @@ Send supported tokens between accounts.
 
 #### Returns
 
-```ts
-Promise<TransactionResponse>
+```python
+TransactionResponse
 ```
 
 #### 📘 Example
 
-```ts
+```python
 await sdk.cash.send({
-  fromAccount: 1,
-  toAccount: 2,
-  tokenAddress: '0x...',
-  amount: '1000000000000000000',
-});
+    "fromAccount": 1,
+    "toAccount": 2,
+    "tokenAddress": "0x...",
+    "amount": "1000000000000000000"
+})
 ```
 
 ### 🪙 Get Supported Tokens
 
-```ts
-const tokens = await sdk.cash.getSupportedTokens();
+```python
+tokens = await sdk.cash.get_supported_tokens()
 ```
 
 ---
@@ -444,10 +438,10 @@ const tokens = await sdk.cash.getSupportedTokens();
 
 ### `TokenWithPrice`
 
-```ts
+```python
 type TokenWithPrice = Token & {
-  priceUSD: string;
-};
+  priceUSD: str;
+}
 ```
 
 ---
@@ -461,7 +455,7 @@ pip install setuptools wheel twine
 # Build SDK
 python setup.py sdist bdist_wheel
 
-# Dev mode
+# Install locally for development
 pip install .
 ```
 
@@ -475,13 +469,13 @@ Contributions welcome! Open an issue or submit a pull request.
 
 ## 📜 License
 
-MIT © [CaishenXYZ](https://github.com/CaishenXYZ)
+MIT © [CaishenTech](https://github.com/CaishenTech)
 
 ---
 
 ## 💬 Support
 
-Please open an issue in the GitHub repository for help or contact the maintainers.
+Please open an issue in the GitHub repository or contact the maintainers for help.
 
 ---
 
