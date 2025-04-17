@@ -1,4 +1,4 @@
-from typing import TypedDict, Optional
+from typing import Optional, List, TypedDict, Union
 
 class SendTransactionParams(TypedDict):
     toAddress: str
@@ -7,14 +7,14 @@ class SendTransactionParams(TypedDict):
 
 class DepositCashParams(TypedDict):
     amount: str
-    account: str
-    tokenAddress: int
+    account: int
+    tokenAddress: str
     chainId: int
 
 class WithdrawCashParams(TypedDict):
     amount: str
-    account: str
-    tokenAddress: int
+    account: int
+    tokenAddress: str
     chainId: int
 
 class Token(TypedDict):
@@ -29,13 +29,9 @@ class BalanceResponse(TypedDict):
     balance: str
     balanceRaw: str
 
-class TransactionResponse(TypedDict):
-    success: bool
-    balance: str
-    balanceRaw: str
-
 class TransactionResponse(TypedDict, total=False):
     success: bool
     message: Optional[str]
     txHash: Optional[str]
     isSuccess: Optional[bool]
+

@@ -1,3 +1,0 @@
-from .cash import Cash
-
-__all__ = ["Cash"]
