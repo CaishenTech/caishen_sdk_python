@@ -1,7 +1,7 @@
 from typing import Any, Callable, Awaitable, Dict
-from vercel_tool import tool  # ✅ fixed: now uses your local file, not a nonexistent 'ai' package
-from ...caishen import CaishenSDK
-from tools.get_tools import get_tools
+from caishen_sdk_python.adapters.vercel_ai.vercel_tool import tool
+from caishen_sdk_python.caishen import CaishenSDK
+from caishen_sdk_python.tools.get_tools import get_tools
 
 
 ToolSet = Dict[str, Callable[[Any], Awaitable[Any]]]
