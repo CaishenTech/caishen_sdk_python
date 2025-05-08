@@ -12,3 +12,4 @@ tests/__pycache__
 caishen_sdk_python/agents/__pycache__
 #Env
 *.env
+.idea
