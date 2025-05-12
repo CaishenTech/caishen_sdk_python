@@ -1,30 +1,29 @@
-from typing import Callable, Any, Awaitable, Dict, Tuple, List
+from typing import Callable, Any, Dict, Tuple
 from caishen_sdk_python.caishen import CaishenSDK
 from caishen_sdk_python.tools.get_tools import get_tools
 
 # Define the Tool type: a callable that takes any parameters and returns an awaitable result
-Tool = Callable[[Any], Awaitable[Any]]
+Tool = Callable[[Any], Any]
 
-async def create_eleven_labs_tools(sdk: CaishenSDK) -> Tuple[Dict[str, Tool], List[Dict]]:
-    tools = get_tools(sdk=sdk)
+async def create_eleven_labs_tools(sdk: CaishenSDK) -> Tuple[list, Dict[str, Tool]]:
+    tools = await get_tools(sdk=sdk)
 
-    # LangChain-style callable functions
-    langchain_tools = {
-        tool_name: (lambda params, t=tool: t["execute"](params))
-        for tool_name, tool in tools.items()
-    }
+    openai_tool_specs = []
+    tool_runners = {}
 
-    # OpenAI-compatible JSON tool definitions
-    openai_tools = [
-        {
+    for tool in tools.values():
+        openai_tool_specs.append({
             "type": "function",
             "function": {
-                "name": tool_name,
-                "description": tool.get("description", "No description provided."),
-                "parameters": tool["parameters"].schema(),  # Assuming parameters are Pydantic schemas
-            }
-        }
-        for tool_name, tool in tools.items()
-    ]
+                "name": tool.name,
+                "description": tool.description,
+                "parameters": tool.parameters.schema(),
+            },
+        })
 
-    return langchain_tools, openai_tools
+        tool_runners = {
+            tool.name: (lambda params, t=tool: t.execute(params))
+            for tool in tools.values()
+        }
+
+    return openai_tool_specs, tool_runners

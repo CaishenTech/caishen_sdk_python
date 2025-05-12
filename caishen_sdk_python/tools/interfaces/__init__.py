@@ -1,15 +1,11 @@
-from typing import Type
-
-class ToolBase:
-    # Define the ToolBase class as the base class
-    pass
-
-class Tools:
-    cash_get_balance: Type[ToolBase]
-    cash_deposit: Type[ToolBase]
-    cash_send: Type[ToolBase]
-    cash_withdraw: Type[ToolBase]
-    crypto_get_balance: Type[ToolBase]
-    send_crypto: Type[ToolBase]
-    swap_crypto: Type[ToolBase]
-    crypto_get_swap_route: Type[ToolBase]
+from ..ToolBase import ToolBase
+from typing import TypedDict
+class Tools(TypedDict):
+    cash_get_balance: ToolBase
+    cash_deposit: ToolBase
+    cash_send: ToolBase
+    cash_withdraw: ToolBase
+    crypto_get_balance: ToolBase
+    send_crypto: ToolBase
+    swap_crypto: ToolBase
+    crypto_get_swap_route: ToolBase
