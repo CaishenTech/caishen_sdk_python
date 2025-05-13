@@ -4,9 +4,9 @@ from ..cash.schema import CashGetBalanceSchema, DepositCashSchema, SendTransacti
 from ..crypto.schema import CryptoGetBalanceSchema, CryptoGetSwapRouteSchema, CryptoSendSchema, CryptoSwapSchema
 from .ToolBase import ToolBase
 from caishen_sdk_python.constants import ChainType
-from caishen_sdk_python.interfaces import Tools
+from caishen_sdk_python.tools.interfaces import Tools
 
-def get_tools(sdk: CaishenSDK) -> Tools:
+async def get_tools(sdk: CaishenSDK) -> Tools:
     tools: Tools = {
         "cash_get_balance": ToolBase(
             name="cash_get_balance",
@@ -141,7 +141,7 @@ def get_tools(sdk: CaishenSDK) -> Tools:
 async def _execute_cash_get_balance(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
     if not isinstance(params.get("account"), int):
         raise ValueError("account field must be a number")
-    return await sdk.cash.getBalance(params)
+    return await sdk.cash.get_balance(params)
 
 async def _execute_cash_deposit(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
     if not all(k in params for k in ("amount", "account", "tokenAddress")):
@@ -161,7 +161,7 @@ async def _execute_cash_withdraw(sdk: CaishenSDK, params: Dict[str, Any]) -> Any
 async def _execute_crypto_get_balance(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
     if not all(k in params["wallet"] for k in ("address", "chainType")):
         raise ValueError("wallet.address and wallet.chainType are required")
-    return await sdk.crypto.getBalance(params)
+    return await sdk.crypto.get_balance(params)
 
 async def _execute_send_crypto(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
     if not all(k in params["payload"] for k in ("toAddress", "amount")):
@@ -180,4 +180,4 @@ async def _execute_crypto_get_swap_route(sdk: CaishenSDK, params: Dict[str, Any]
         raise ValueError("wallet.account is required")
     if not all(k in params["payload"] for k in ("amount", "from", "to")):
         raise ValueError("payload.amount, payload.from, and payload.to are required")
-    return await sdk.crypto.getSwapRoute(params)
+    return await sdk.crypto.get_swap_route(params)

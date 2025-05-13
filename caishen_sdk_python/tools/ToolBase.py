@@ -1,16 +1,7 @@
-from typing import Callable, Type, TypedDict, Any
-from pydantic import BaseModel
-
-class ToolBase(TypedDict):
-    name: str
-    description: str
-    parameters: Type[BaseModel]
-    execute: Callable[[BaseModel], Any]
-
-def tool_base(name: str, description: str, parameters: Type[BaseModel], execute: Callable[[BaseModel], Any]) -> ToolBase:
-    return {
-        "name": name,
-        "description": description,
-        "parameters": parameters,
-        "execute": execute,
-    }
+from typing import Callable, Dict, Any
+class ToolBase:
+    def __init__(self, name: str, description: str, parameters: Any, execute: Callable[[Any], Any]):
+        self.name = name
+        self.description = description
+        self.parameters = parameters
+        self.execute = execute
