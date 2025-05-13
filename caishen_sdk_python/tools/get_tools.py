@@ -5,6 +5,7 @@ from ..crypto.schema import CryptoGetBalanceSchema, CryptoGetSwapRouteSchema, Cr
 from .ToolBase import ToolBase
 from caishen_sdk_python.constants import ChainType
 from caishen_sdk_python.tools.interfaces import Tools
+import json
 
 async def get_tools(sdk: CaishenSDK) -> Tools:
     tools: Tools = {
@@ -139,36 +140,50 @@ async def get_tools(sdk: CaishenSDK) -> Tools:
 
 # Helper functions to execute each tool's logic
 async def _execute_cash_get_balance(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not isinstance(params.get("account"), int):
         raise ValueError("account field must be a number")
     return await sdk.cash.get_balance(params)
 
 async def _execute_cash_deposit(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not all(k in params for k in ("amount", "account", "tokenAddress")):
         raise ValueError("amount, account, and tokenAddress fields are required")
     return await sdk.cash.deposit(params)
 
 async def _execute_cash_send(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not all(k in params for k in ("amount", "account", "toAddress")):
         raise ValueError("amount, account, and toAddress fields are required")
     return await sdk.cash.send(params)
 
 async def _execute_cash_withdraw(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not all(k in params for k in ("amount", "account", "tokenAddress")):
         raise ValueError("amount, account, and tokenAddress fields are required")
     return await sdk.cash.withdraw(params)
 
 async def _execute_crypto_get_balance(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not all(k in params["wallet"] for k in ("address", "chainType")):
         raise ValueError("wallet.address and wallet.chainType are required")
     return await sdk.crypto.get_balance(params)
 
 async def _execute_send_crypto(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not all(k in params["payload"] for k in ("toAddress", "amount")):
         raise ValueError("payload.toAddress and payload.amount are required")
     return await sdk.crypto.send(params)
 
 async def _execute_swap_crypto(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not all(k in params["wallet"] for k in ("account", "chainType")):
         raise ValueError("wallet.account and wallet.chainType are required")
     if not params["payload"].get("confirmationCode"):
@@ -176,6 +191,8 @@ async def _execute_swap_crypto(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
     return await sdk.crypto.swap(params)
 
 async def _execute_crypto_get_swap_route(sdk: CaishenSDK, params: Dict[str, Any]) -> Any:
+    if isinstance(params, str):
+        params = json.loads(params)
     if not isinstance(params["wallet"].get("account"), int):
         raise ValueError("wallet.account is required")
     if not all(k in params["payload"] for k in ("amount", "from", "to")):
